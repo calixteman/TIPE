@@ -8,6 +8,12 @@ from cvxopt import matrix
 from cvxopt import solvers
 import matplotlib.pyplot as plt
 
+import matplotlib
+
+# nice math font
+matplotlib.rcParams['mathtext.fontset'] = 'cm'
+
+
 K = [0.1,0.2,0.4,0.6,0.8,1]         #valeurs de p(barre)/p*
 delta = 20                          #amplitude de l'onde (micromètres)
 abscisse = 1000                     #nombre de points en abscisses
@@ -24,6 +30,9 @@ def resolution_quadratique(p2):         #methode de resolution quadratique pour 
         for i in range(1,n+1): L.append(1/i)
         return(L)
     P = matrix(np.diag(mat_P()))
+
+    # plus simple
+    # P = matrix(np.diag(1 / np.arange(1, n + 1)))
     
     #création de q:
     q = matrix(-np.eye(n,1))
@@ -38,6 +47,10 @@ def resolution_quadratique(p2):         #methode de resolution quadratique pour 
         return(L)
                          
     G = matrix(np.reshape(mat_G(),(m,n)))
+
+    # phis = np.array([np.linspace(0, np.pi, m)]).T
+    # js = np.arange(1, n + 1)
+    # G = matrix(-np.cos(phis * js))
     
     #création de h:
     h = matrix(p2*np.ones((m,1),float))
@@ -74,19 +87,17 @@ def pressure_distribution():
                 s += matrice_solution[h][0][i]*np.cos((i+1)*x*np.pi)     #le [0] est pour enlever l'anomalie du 'array' vu precedement
             Y.append(s + p2)
     
-        plt.plot(X,Y, label="p-/p* = {}".format(p2))                #formalisation graphique
+        plt.plot(X,Y, label=r"$\frac{\bar{p}}{p^*} = " + str(p2) + "$")                #formalisation graphique
         plt.legend()
 
-        plt.xlabel('phi/pi')
-        plt.ylabel('p/p*')
+        plt.xlabel(r'$\frac{\varphi}{\pi}$', fontsize=15)
+        plt.ylabel(r'$\frac{p}{p^*}$', fontsize=15)
         plt.title('distribution de la pression, solution analytique, Weestergaard')
         plt.ylim(-0.03,2.0)
         plt.xlim(0.0,1.0)
-        
-        
-        
-        
-        
+
+pressure_distribution()
+plt.show()
         
         
 ####trace de la variation de la la separation moyenne separant les deux surfaces en fonction de la pression moyenne   
